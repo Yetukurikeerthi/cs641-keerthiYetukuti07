@@ -89,7 +89,7 @@ export default function PostListItem({ post }: { post: Post }) {
     }
   };
 
-  const avatar = cld.image(post?.user?.avatar_url || "user_rubrec");
+  const avatar = cld.image(post?.user?.avatar_url || "puppi_e8hgfi");
   avatar.resize(
     thumbnail().width(48).height(48).gravity(focusOn(FocusOn.face()))
   );
@@ -122,6 +122,9 @@ export default function PostListItem({ post }: { post: Post }) {
         <Feather name="send" size={20} />
 
         <Feather name="bookmark" size={20} className="ml-auto" />
+      </View>
+      <View className="gap-3 p-3">
+        <Text>{post?.caption}</Text>
       </View>
     </View>
   );

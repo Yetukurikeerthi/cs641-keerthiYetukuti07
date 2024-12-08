@@ -23,59 +23,96 @@ export default function ProfileScreen() {
 
   const getProfile = async () => {
     if (!user) {
+      console.log("No user found. Cannot fetch profile.");
       return;
     }
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
 
-    if (error) {
-      Alert.alert("Failed to fetch profile");
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching profile:", error);
+        Alert.alert("Failed to fetch profile");
+        return;
+      }
+
+      console.log("Fetched profile data:", data);
+      setUsername(data.username);
+      setBio(data.bio);
+      setRemoteImage(data.avatar_url);
+    } catch (err) {
+      console.error("Unexpected error fetching profile:", err);
     }
-
-    setUsername(data.username);
-    setBio(data.bio);
-    setRemoteImage(data.avatar_url);
   };
 
   const updateProfile = async () => {
     if (!user) {
+      console.log("No user found. Cannot update profile.");
       return;
     }
 
-    const updatedProfile = {
-      id: user.id,
-      username,
-      bio,
-    };
+    try {
+      const updatedProfile: any = {
+        username,
+        bio,
+      };
 
-    if (image) {
-      const response = await uploadImage(image);
-      updatedProfile.avatar_url = response.public_id;
-    }
+      // If a new image is selected, upload and update the avatar URL
+      if (image) {
+        console.log("Uploading image...");
+        const response = await uploadImage(image);
+        console.log("Image upload response:", response);
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .update(updatedProfile);
+        if (response?.public_id) {
+          updatedProfile.avatar_url = response.public_id;
+        } else {
+          console.warn("Image upload failed. Skipping avatar update.");
+        }
+      }
 
-    if (error) {
-      Alert.alert("Failed to update profile");
+      console.log("Updating profile with data:", updatedProfile);
+
+      const { error } = await supabase
+        .from("profiles")
+        .update(updatedProfile)
+        .eq("email", user.email)
+        .select();
+
+      if (error) {
+        console.error("Error updating profile:", error);
+        Alert.alert("Failed to update profile", error.message);
+      } else {
+        console.log("Profile updated successfully!");
+        Alert.alert("Profile updated successfully!");
+      }
+    } catch (err) {
+      console.error("Unexpected error updating profile:", err);
+      Alert.alert("An unexpected error occurred", err.message);
     }
   };
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    });
+    try {
+      console.log("Opening image picker...");
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      if (!result.canceled) {
+        console.log("Image selected:", result.assets[0].uri);
+        setImage(result.assets[0].uri);
+      } else {
+        console.log("Image selection canceled.");
+      }
+    } catch (err) {
+      console.error("Unexpected error opening image picker:", err);
     }
   };
 
@@ -99,7 +136,7 @@ export default function ProfileScreen() {
           className="w-52 aspect-square self-center rounded-full bg-slate-300"
         />
       ) : (
-        <View className="w-52 aspect-square  self-center rounded-full bg-slate-300" />
+        <View className="w-52 aspect-square self-center rounded-full bg-slate-300" />
       )}
       <Text
         onPress={pickImage}
@@ -123,7 +160,7 @@ export default function ProfileScreen() {
           value={bio}
           onChangeText={setBio}
           multiline
-          numberOfLines={3}
+          numberOfLines={1}
         />
       </View>
 

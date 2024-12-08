@@ -2,6 +2,7 @@ import { Text, View, Image, TextInput, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import Button from "~/src/components/Button";
+import CustomTextInput from "~/src/components/CustomTextInput";
 import { uploadImage } from "~/src/lib/cloudinary";
 import { supabase } from "~/src/lib/supabase";
 import { useAuth } from "~/src/providers/AuthProvider";
@@ -54,7 +55,6 @@ export default function CreatePost() {
         },
       ])
       .select();
-    console.log({ caption, response, session });
     router.push("/(tabs)");
   };
 
@@ -87,11 +87,21 @@ export default function CreatePost() {
       </Text>
 
       {/* TextInput for caption */}
+
       <TextInput
         value={caption}
         onChangeText={(newValue) => setCaption(newValue)}
-        placeholder="What is on your mind"
-        className="w-full p-3"
+        placeholder="What is on your mind...."
+        placeholderTextColor="#A9A9A9" // Light gray placeholder text color
+        style={{
+          width: "100%", // Full width
+          padding: 12, // Padding inside TextInput
+          color: "blue", // Changes the text color to blue
+          fontSize: 16, // Optional: Adjust font size
+          borderWidth: 1, // Border thickness
+          borderColor: "#ccc", // Border color
+          borderRadius: 8, // Optional: Rounded corners
+        }}
       />
 
       {/* Button */}
