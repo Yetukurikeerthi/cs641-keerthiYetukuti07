@@ -7,7 +7,6 @@ import {
 } from "react-native";
 import { Ionicons, Feather, AntDesign } from "@expo/vector-icons";
 
-import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "cloudinary-react-native";
 // Import required actions and qualifiers.
 import { thumbnail } from "@cloudinary/url-gen/actions/resize";
@@ -123,8 +122,8 @@ export default function PostListItem({ post }: { post: Post }) {
 
         <Feather name="bookmark" size={20} className="ml-auto" />
       </View>
-      <View className="gap-3 p-3">
-        <Text>{post?.caption}</Text>
+      <View className="gap-8 p-2">
+        <Text style={{ fontWeight: "bold" }}>{post?.caption}</Text>
       </View>
     </View>
   );

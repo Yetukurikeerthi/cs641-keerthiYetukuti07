@@ -24,7 +24,7 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="new"
+        name="CreatePost"
         options={{
           headerTitle: "Create post",
           tabBarIcon: ({ color }) => (

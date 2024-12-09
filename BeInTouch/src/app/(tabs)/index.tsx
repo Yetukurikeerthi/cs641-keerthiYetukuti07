@@ -23,7 +23,7 @@ export default function FeedScreen() {
     if (error) {
       Alert.alert("Something went wrong");
     }
-    console.log("POSTS::::::::::::::", posts);
+
     setPosts(data);
     setLoading(false);
   };
