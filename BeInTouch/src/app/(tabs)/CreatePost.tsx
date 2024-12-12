@@ -7,6 +7,7 @@ import { supabase } from "~/src/lib/supabase";
 import { useAuth } from "~/src/providers/AuthProvider";
 import { router } from "expo-router";
 import { ResizeMode, Video } from "expo-av";
+import { setEnabled } from "react-native/Libraries/Performance/Systrace";
 
 export default function CreatePost() {
   const [caption, setCaption] = useState("");
@@ -52,6 +53,7 @@ export default function CreatePost() {
           image: response?.public_id,
           user_id: session?.user.id,
           media_type: mediaType,
+          user_email: session?.user.email,
         },
       ])
       .select();

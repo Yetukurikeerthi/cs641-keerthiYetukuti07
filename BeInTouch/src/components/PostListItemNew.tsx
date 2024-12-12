@@ -27,7 +27,7 @@ export default function PostListItem({ post }) {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (post.my_likes.length > 0) {
+    if (post.my_likes?.length > 0) {
       setLikeRecord(post.my_likes[0]);
       setIsLiked(true);
     }

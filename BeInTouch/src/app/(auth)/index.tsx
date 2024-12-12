@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, View, AppState, TextInput } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  View,
+  AppState,
+  TextInput,
+  Text,
+} from "react-native";
 import Button from "~/src/components/Button";
 import { supabase } from "~/src/lib/supabase";
 
@@ -19,6 +26,7 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userName, setUserName] = useState("");
 
   async function signInWithEmail() {
     setLoading(true);
@@ -41,6 +49,22 @@ export default function Auth() {
       password: password,
     });
 
+    const { data: profile_data, error: profile_error } = await supabase
+      .from("profiles")
+      .insert([
+        {
+          username: userName,
+          email: email,
+          id: session?.user.id,
+        },
+      ])
+      .select();
+
+    if (profile_error) {
+      console.log({ profile_error });
+      Alert.alert("Error while creating profile");
+    }
+
     if (error) Alert.alert(error.message);
     if (!session)
       Alert.alert("Please check your inbox for email verification!");
@@ -50,6 +74,17 @@ export default function Auth() {
   return (
     <View style={styles.container}>
       <View style={[styles.verticallySpaced, styles.mt20]}>
+        <Text>UserName</Text>
+        <TextInput
+          onChangeText={(text) => setUserName(text)} // Update the state when text changes
+          value={userName} // Bind the state to the input field
+          placeholder="Enter Username"
+          autoCapitalize="none" // Prevent auto-capitalization
+          className="border border-gray-300 p-3 rounded-md"
+        />
+      </View>
+      <View style={[styles.verticallySpaced, styles.mt20]}>
+        <Text>Email</Text>
         <TextInput
           onChangeText={(text) => setEmail(text)}
           value={email}
@@ -59,6 +94,7 @@ export default function Auth() {
         />
       </View>
       <View style={styles.verticallySpaced}>
+        <Text>Password</Text>
         <TextInput
           onChangeText={(text) => setPassword(text)}
           value={password}
@@ -69,18 +105,10 @@ export default function Auth() {
         />
       </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button
-          title="Sign in"
-          disabled={loading}
-          onPress={() => signInWithEmail()}
-        />
+        <Button title="Sign in" onPress={() => signInWithEmail()} />
       </View>
       <View style={styles.verticallySpaced}>
-        <Button
-          title="Sign up"
-          disabled={loading}
-          onPress={() => signUpWithEmail()}
-        />
+        <Button title="Sign up" onPress={() => signUpWithEmail()} />
       </View>
     </View>
   );

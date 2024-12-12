@@ -19,15 +19,11 @@ export default function FeedScreen() {
     setLoading(true);
     let { data, error } = await supabase
       .from("posts")
-      .select("*, user:profiles(*), my_likes:likes(*), likes(count)")
-      // .eq('id', 49) // show only my posts
-      .eq("my_likes.user_id", user.id)
+      .select("*, user:profiles(*)")
       .order("created_at", { ascending: false });
-
     if (error) {
       Alert.alert("Something went wrong");
     }
-    // console.log(JSON.stringify(data, null, 2));
     setPosts(data);
     setLoading(false);
   };
