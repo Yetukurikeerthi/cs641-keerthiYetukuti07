@@ -74,27 +74,26 @@ export default function Auth() {
   return (
     <View style={styles.container}>
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Text>UserName</Text>
         <TextInput
           onChangeText={(text) => setUserName(text)} // Update the state when text changes
           value={userName} // Bind the state to the input field
-          placeholder="Enter Username"
+          placeholder="User Name"
           autoCapitalize="none" // Prevent auto-capitalization
           className="border border-gray-300 p-3 rounded-md"
+          placeholderTextColor="#A9A9A9" // Light gray placeholder text color
         />
       </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Text>Email</Text>
         <TextInput
           onChangeText={(text) => setEmail(text)}
           value={email}
-          placeholder="email@address.com"
+          placeholder="email@gmail.com"
           autoCapitalize={"none"}
           className="border border-gray-300 p-3 rounded-md"
+          placeholderTextColor="#A9A9A9" // Light gray placeholder text color
         />
       </View>
-      <View style={styles.verticallySpaced}>
-        <Text>Password</Text>
+      <View style={[styles.verticallySpaced, styles.mt20]}>
         <TextInput
           onChangeText={(text) => setPassword(text)}
           value={password}
@@ -102,6 +101,7 @@ export default function Auth() {
           placeholder="Password"
           autoCapitalize={"none"}
           className="border border-gray-300 p-3 rounded-md"
+          placeholderTextColor="#A9A9A9" // Light gray placeholder text color
         />
       </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
