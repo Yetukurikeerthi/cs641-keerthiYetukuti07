@@ -51,6 +51,7 @@ export default function CreatePost() {
           caption,
           image: response?.public_id,
           user_id: session?.user.id,
+          media_type: mediaType,
         },
       ])
       .select();
@@ -89,17 +90,19 @@ export default function CreatePost() {
 
       <TextInput
         value={caption}
-        onChangeText={(newValue) => setCaption(newValue)}
-        placeholder="What is on your mind...."
+        onChangeText={setCaption} // Simplified callback function
+        placeholder="What is on your mind..."
         placeholderTextColor="#A9A9A9" // Light gray placeholder text color
         style={{
-          width: "100%", // Full width
-          padding: 12, // Padding inside TextInput
-          color: "blue", // Changes the text color to blue
-          fontSize: 16, // Optional: Adjust font size
+          width: "100%", // Full width of the parent container
+          padding: 14, // Slightly increased padding for better UX
+          color: "#000000", // Changed to hexadecimal black for consistency
+          fontSize: 16, // Consistent font size
           borderWidth: 1, // Border thickness
-          borderColor: "#ccc", // Border color
-          borderRadius: 8, // Optional: Rounded corners
+          borderColor: "#cccccc", // Explicit hexadecimal light gray border
+          borderRadius: 10, // Slightly more rounded corners for modern look
+          backgroundColor: "#FFFFFF", // Added white background for contrast
+          marginVertical: 10, // Added vertical spacing
         }}
       />
 

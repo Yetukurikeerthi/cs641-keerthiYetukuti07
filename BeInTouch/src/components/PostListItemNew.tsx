@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { Ionicons, Feather, AntDesign } from "@expo/vector-icons";
 
+import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage } from "cloudinary-react-native";
 // Import required actions and qualifiers.
 import { thumbnail } from "@cloudinary/url-gen/actions/resize";
@@ -18,28 +19,19 @@ import PostContent from "./PostContent";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../providers/AuthProvider";
+import { sendLikeNotification } from "../utils/notifications";
 
-type Post = {
-  id: string;
-  user: {
-    username?: string;
-    avatar_url?: string;
-  };
-  [key: string]: any; // For additional dynamic properties
-};
-
-type LikeRecord = {
-  id: string;
-};
-
-export default function PostListItem({ post }: { post: Post }) {
+export default function PostListItem({ post }) {
   const [isLiked, setIsLiked] = useState(false);
-  const [likeRecord, setLikeRecord] = useState<LikeRecord | null>(null);
+  const [likeRecord, setLikeRecord] = useState(null);
   const { user } = useAuth();
 
   useEffect(() => {
-    fetchLike();
-  }, []);
+    if (post.my_likes.length > 0) {
+      setLikeRecord(post.my_likes[0]);
+      setIsLiked(true);
+    }
+  }, [post.my_likes]);
 
   useEffect(() => {
     if (isLiked) {
@@ -49,18 +41,19 @@ export default function PostListItem({ post }: { post: Post }) {
     }
   }, [isLiked]);
 
-  const fetchLike = async () => {
-    const { data, error } = await supabase
-      .from("likes")
-      .select("*")
-      .eq("user_id", user?.id)
-      .eq("post_id", post.id);
+  // const fetchLike = async () => {
+  //   const { data, error } = await supabase
+  //     .from('likes')
+  //     .select('*')
+  //     .eq('user_id', user?.id)
+  //     .eq('post_id', post.id)
+  //     .select();
 
-    if (data && data.length > 0) {
-      setLikeRecord(data[0] as LikeRecord);
-      setIsLiked(true);
-    }
-  };
+  //   if (data && data?.length > 0) {
+  //     setLikeRecord(data[0]);
+  //     setIsLiked(true);
+  //   }
+  // };
 
   const saveLike = async () => {
     if (likeRecord) {
@@ -71,9 +64,10 @@ export default function PostListItem({ post }: { post: Post }) {
       .insert([{ user_id: user?.id, post_id: post.id }])
       .select();
 
-    if (data && data.length > 0) {
-      setLikeRecord(data[0] as LikeRecord);
-    }
+    // send notification to the owner of that post
+    sendLikeNotification(data[0]);
+
+    setLikeRecord(data[0]);
   };
 
   const deleteLike = async () => {
@@ -88,7 +82,7 @@ export default function PostListItem({ post }: { post: Post }) {
     }
   };
 
-  const avatar = cld.image(post?.user?.avatar_url || "puppi_e8hgfi");
+  const avatar = cld.image(post.user.avatar_url || "user_rubrec");
   avatar.resize(
     thumbnail().width(48).height(48).gravity(focusOn(FocusOn.face()))
   );
@@ -102,7 +96,7 @@ export default function PostListItem({ post }: { post: Post }) {
           className="w-12 aspect-square rounded-full"
         />
         <Text className="font-semibold">
-          {post?.user?.username || "New user"}
+          {post.user.username || "New user"}
         </Text>
       </View>
 
@@ -122,8 +116,17 @@ export default function PostListItem({ post }: { post: Post }) {
 
         <Feather name="bookmark" size={20} className="ml-auto" />
       </View>
-      <View className="gap-8 p-2">
-        <Text style={{ fontWeight: "bold" }}>{post?.caption}</Text>
+
+      <View className="px-3 gap-1">
+        <Text className="font-semibold">
+          {post.likes?.[0]?.count || 0} likes
+        </Text>
+        <Text>
+          <Text className="font-semibold">
+            {post.user.username || "New user"}{" "}
+          </Text>
+          {post.caption}
+        </Text>
       </View>
     </View>
   );

@@ -7,15 +7,12 @@ import { ResizeMode, Video } from "expo-av";
 export default function PostContent({ post }) {
   const { width } = useWindowDimensions();
 
-  console.log("post content :", post);
+  if (post.media_type === "image") {
+    const image = cld.image(post.image);
+    image.resize(thumbnail().width(width).height(width));
 
-  //if (post.media_type === "image") {
-  const image = cld.image(post.image);
-  console.log({ image });
-  image.resize(thumbnail().width(width).height(width));
-
-  return <AdvancedImage cldImg={image} className="w-full aspect-[4/3]" />;
-  //}
+    return <AdvancedImage cldImg={image} className="w-full aspect-[4/3]" />;
+  }
 
   if (post.media_type === "video") {
     const video = cld.video(post.image);

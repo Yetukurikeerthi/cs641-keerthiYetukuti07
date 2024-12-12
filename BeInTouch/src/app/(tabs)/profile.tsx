@@ -159,8 +159,6 @@ export default function ProfileScreen() {
           placeholder="Bio"
           value={bio}
           onChangeText={setBio}
-          multiline
-          numberOfLines={1}
         />
       </View>
 
