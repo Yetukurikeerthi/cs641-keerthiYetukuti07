@@ -99,7 +99,7 @@ async function registerForPushNotificationsAsync() {
       Constants?.easConfig?.projectId;
 
     if (!projectId) {
-      handleRegistrationError("Project ID not found");
+      //handleRegistrationError("Project ID not found");
     }
 
     try {
@@ -108,10 +108,9 @@ async function registerForPushNotificationsAsync() {
           projectId,
         })
       ).data;
-      console.log(pushTokenString);
       return pushTokenString;
     } catch (e: unknown) {
-      handleRegistrationError(`${e}`);
+      //handleRegistrationError(`${e}`);
     }
   } else {
     // handleRegistrationError('Must use physical device for push notifications');
